@@ -1,75 +1,116 @@
-Retail Database Documentation
-Welcome to the documentation for the Retail Database. This document serves as a guide to understand the structure, functionality, and usage of the Retail Database, designed to streamline retail operations efficiently.
+# AOBoutique Retail Database Project
 
-Table of Contents
-Introduction
-Database Schema
-Normalization
-Tables Description
-Queries and Reports
-Usage
-Contributing
-License
-Introduction
-The Retail Database is a comprehensive relational database management system tailored to meet the diverse needs of retail businesses. It provides robust features for managing customers, products, orders, shipping, and analyzing sales performance, thereby empowering retailers to make informed decisions and optimize their operations.
+---
 
-Database Schema
-The database schema comprises nine meticulously designed tables, each serving a distinct purpose in organizing and storing crucial data. The tables are:
+## Introduction
 
-Addresses
-Customers
-Categories
-Products
-Orders
-Order_Items
-Shipping_Info
-Sales_Analytics
-Defaults
-Normalization
-The database schema adheres to the principles of normalization, ensuring efficient data organization and minimizing redundancy. It is normalized up to at least the third normal form (3NF), promoting data integrity and facilitating streamlined data retrieval and manipulation.
+The Retail Database is designed to manage the operations of a retail business efficiently. It includes tables for managing customers, products, orders, shipping, and sales analytics.
 
-Tables Description
-Addresses: Stores detailed information about customer addresses, including street, city, province, and postal code.
 
-Customers: Contains comprehensive data about customers, including their personal details, contact information, and associated addresses.
+## Database Schema
+The database schema comprises nine meticulously designed tables, each serving a distinct purpose in organizing and storing crucial data.
 
-Categories: Represents distinct product categories, enabling efficient categorization and organization of products.
+![ERD](ERD.jpg)
 
-Products: Encompasses essential details of individual products available for sale, such as name, description, quantity, price, and associated category.
+## Normalization
 
-Orders: Tracks vital information pertaining to customer orders, including order date, total amount, and associated customer.
+The database schema is normalized up to at least the third normal form (3NF) to minimize redundancy and ensure data integrity.
 
-Order_Items: Captures granular details of items within each order, including product ID, quantity, price, and any applicable discounts.
+## Table Description
 
-Shipping_Info: Stores essential shipping-related details for orders, facilitating seamless order fulfillment and tracking.
+### Addresses
 
-Sales_Analytics: Serves as a repository for aggregated sales data, providing valuable insights into revenue, order metrics, popular products, and more.
+- `address_ID`: Primary key for the Addresses table.
+- `street`: Street address.
+- `city`: City name.
+- `province`: Province name.
+- `postal_code`: Postal code.
 
-Defaults: Contains default values, particularly related to GST (Goods and Services Tax), ensuring consistency and accuracy in calculations.
+### Customers
 
-Queries and Reports
-The Retail Database supports a wide array of queries and reports, empowering users to extract actionable insights and make data-driven decisions. Some of the key reports include:
+- `customer_ID`: Primary key for the Customers table.
+- `first_name`: Customer's first name.
+- `last_name`: Customer's last name.
+- `address_ID`: Foreign key referencing the address of the customer from the Addresses table.
+- `email`: Customer's email address.
+- `phone`: Customer's phone number.
 
-Sales Report
-Order History Report
-Product Sales Report
-Inventory Report
-Customer Report
-Shipping Report
-Category-wise Sales Report
-New Customer Acquisition Report
-Order Analysis Report
-Revenue Trends Report
-Usage
-The Retail Database serves as a robust backend system for retail management software, providing comprehensive functionalities to manage various aspects of retail operations. Users can interact with the database using SQL queries to retrieve, insert, update, and delete data as per their requirements.
+### Categories
 
-Contributing
-Contributions to the Retail Database project are welcome! If you have any suggestions, enhancements, or bug fixes, please feel free to submit a pull request or open an issue on the GitHub repository.
+- `category_ID`: Primary key for the Categories table.
+- `name`: Category name.
+- `description`: Category description.
 
-License
-The Retail Database is released under the MIT License, granting users the freedom to use, modify, and distribute the software. See the LICENSE file for more details.
+### Products
 
-This enhanced README.md file provides a clear and structured overview of the Retail Database, making it easier for users to understand its functionality and usage. Feel free to customize it further to suit your specific needs and preferences.
+- `product_ID`: Primary key for the Products table.
+- `name`: Product name.
+- `description`: Product description.
+- `avail_qty`: Available quantity of the product.
+- `price`: Price of the product.
+- `category_ID`: Foreign key referencing the category of the product from the Categories table.
+
+### Orders
+
+- `order_ID`: Primary key for the Orders table.
+- `customer_ID`: Foreign key referencing the customer who placed the order from the Customers table.
+- `date_and_time`: Date and time when the order was placed.
+- `total`: Total amount of the order.
+
+### Order_Items
+
+- `order_item_ID`: Primary key for the Order_Items table.
+- `order_ID`: Foreign key referencing the order to which the item belongs from the Orders table.
+- `product_ID`: Foreign key referencing the product being ordered from the Products table.
+- `quantity`: Quantity of the ordered item.
+- `price`: Price of the ordered item.
+- `discount`: Discount applied to the ordered item.
+
+### Shipping_Info
+
+- `shipping_ID`: Primary key for the Shipping_Info table.
+- `order_ID`: Foreign key referencing the order for which shipping information is stored from the Orders table.
+- `shipping_method`: Shipping method used.
+- `shipping_cost`: Cost of shipping.
+- `tracking_num`: Tracking number for the shipment.
+- `ETD`: Estimated time of delivery.
+
+### Sales_Analytics
+
+- `analytics_ID`: Primary key for the Sales_Analytics table.
+- `data`: Date for which analytics data is recorded.
+- `total_revenue`: Total revenue generated.
+- `total_orders`: Total number of orders.
+- `average_order_value`: Average value of orders.
+- `total_items_sold`: Total number of items sold.
+- `popular_products`: List of popular products (comma-separated product IDs).
+- `most_ordered_product_ID`: Foreign key referencing the most ordered product from the Products table.
+- `newCustomers`: Number of new customers.
+- `total_discount_applied`: Total discount applied across orders.
+- `highest_order_amount`: Highest order amount.
+- `lowest_order_amount`: Lowest order amount.
+
+### Defaults
+
+- `gst`: Default GST (Goods and Services Tax) percentage.
+
+---
+
+## Queries and Reports
+The database supports various queries and reports, including Category Sales Report, Customer Report, Detailed Order Report, Inventory Report, Order History Report, Product Sales Report, Sales Report.
+
+## Usage
+
+The Retail Database can be used as a backend system for retail management software. Users can interact with the database using SQL queries to retrieve, insert, update, and delete data as required.
+
+## Contributors
+
+[Anzhelika Kuchma](https://github.com/anzhelika-kuchma)
+
+
+## License
+
+The Retail Database is released under the [MIT License](LICENSE), granting users the freedom to use, modify, and distribute the software.
 
 
 

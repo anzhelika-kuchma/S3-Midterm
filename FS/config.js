@@ -1,82 +1,145 @@
-const fs = require('fs');
+const fs = require("fs");
+const path = require("path");
+const { EventEmitter } = require("events");
+
+const configjson = require("./templates").configjson;
 const myArgs = process.argv.slice(2);
 
-const { configjson } = require('./templates');
+const DEBUG = true;
 
+class MyEmitter extends EventEmitter {}
+
+const myEmitter = new MyEmitter();
+
+// Function to log events
+function logEvents(event, level, msg) {
+  console.log(`[${event}] [${level}] ${msg}`);
+}
+
+myEmitter.on("log", (event, level, msg) => logEvents(event, level, msg));
+
+// Function to display configuration
 function displayConfig() {
-    if(DEBUG) console.log('config.displayConfig()');
-    fs.readFile(__dirname + "/json/config.json", (error, data) => {
-        if(error) throw error; // should write a log event for the error, github issue #7    
-        console.log(JSON.parse(data));
-    });
+  if (DEBUG) console.log("config.displayConfig()");
+  fs.readFile(path.join(__dirname, "json", "./config.json"), (error, data) => {
+    if (error) throw error;
+    console.log(JSON.parse(data));
+    myEmitter.emit(
+      "log",
+      "config.displayConfig()",
+      "INFO",
+      "config.json displayed"
+    );
+  });
 }
 
+// Function to reset configuration
 function resetConfig() {
-    if(DEBUG) console.log('config.resetConfig()');
-    let configdata = JSON.stringify(configjson, null, 2);
-    // if(DEBUG) console.log(__dirname + './json/config.json');
-    // if(DEBUG) console.log(configdata);
-    fs.writeFile(__dirname + '/json/config.json', configdata, (error) => {
-        if(error) throw error;   // issue #7 also applies here
-        if(DEBUG) console.log('Config file reset to original state');
-     });
+  if (DEBUG) console.log("config.resetConfig()");
+  const configdata = JSON.stringify(configjson, null, 2);
+  fs.writeFile(
+    path.join(__dirname, "json", "./config.json"),
+    configdata,
+    (error) => {
+      if (error) throw error;
+      if (DEBUG) console.log("Config file reset to original state");
+      myEmitter.emit(
+        "log",
+        "config.resetConfig()",
+        "INFO",
+        "config.json reset to original state."
+      );
+    }
+  );
 }
 
+// Function to set configuration
 function setConfig() {
-    if(DEBUG) console.log('config.setConfig()');
-    if(DEBUG) console.log(myArgs);
-
-    let match = false;
-    fs.readFile(__dirname + "/json/config.json", (error, data) => {
-        if(error) throw error;         
-        if(DEBUG) console.log(JSON.parse(data));
-        let cfg = JSON.parse(data);
-        for(let key of Object.keys(cfg)){
-            if(DEBUG) console.log(`K E Y: ${key}`);
-            if(key === myArgs[2]) {
-                cfg[key] = myArgs[3];
-                match = true;
-            }
-        }
-        if(!match) {
-            console.log(`invalid key: ${myArgs[2]}, try another.`)
-       }
-        if(DEBUG) console.log(cfg);
-        data = JSON.stringify(cfg, null, 2);
-        // looks like this code is writing the file again even if there is
-        fs.writeFile(__dirname + '/json/config.json', data, (error) => {
-            if (error) throw error;
-            if(DEBUG) console.log('Config file successfully updated.');
-        });
-    });
+  if (DEBUG) console.log("config.setConfig()");
+  const args = process.argv.slice(2);
+  let match = false;
+  fs.readFile(path.join(__dirname, "json", "./config.json"), (error, data) => {
+    if (error) throw error;
+    if (DEBUG) console.log(JSON.parse(data));
+    const cfg = JSON.parse(data);
+    for (const key of Object.keys(cfg)) {
+      if (key === args[2]) {
+        cfg[key] = args[3];
+        match = true;
+      }
+    }
+    if (!match) {
+      console.log(`invalid key: ${args[2]}, try another.`);
+      myEmitter.emit(
+        "log",
+        "config.setConfig()",
+        "WARNING",
+        `invalid key: ${args[2]}`
+      );
+    }
+    if (DEBUG) console.log(cfg);
+    data = JSON.stringify(cfg, null, 2);
+    fs.writeFile(
+      path.join(__dirname, "json", "./config.json"),
+      data,
+      (error) => {
+        if (error) throw error;
+        if (DEBUG) console.log("Config file successfully updated.");
+        myEmitter.emit(
+          "log",
+          "config.setConfig()",
+          "INFO",
+          `config.json "${args[2]}": updated to "${args[3]}"`
+        );
+      }
+    );
+  });
 }
 
+// Function to handle CLI configuration
 function configApp() {
-  if(DEBUG) console.log('configApp()');
+  if (DEBUG) console.log("configApp()");
+  myEmitter.emit(
+    "log",
+    "config.configApp()",
+    "INFO",
+    "config option was called by CLI"
+  );
 
   switch (myArgs[1]) {
-  case '--show':
-      if(DEBUG) console.log('--show');
+    case "--show":
       displayConfig();
       break;
-  case '--reset':
-      if(DEBUG) console.log('--reset');
+    case "--reset":
       resetConfig();
       break;
-  case '--set':
-      if(DEBUG) console.log('--set');
+    case "--set":
       setConfig();
       break;
-  case '--help':
-  case '--h':
-  default:
-      fs.readFile(__dirname + "/usage.txt", (error, data) => {
-          if(error) throw error;              
+    case "--help":
+    case "--h":
+    default:
+      fs.readFile(
+        path.join(__dirname, "views", "config.txt"),
+        (error, data) => {
+          if (error) throw error;
           console.log(data.toString());
-      });
+        }
+      );
+      myEmitter.emit(
+        "log",
+        "config.configApp()",
+        "INFO",
+        "invalid CLI option, usage displayed"
+      );
   }
 }
 
 module.exports = {
   configApp,
-}
+  displayConfig,
+  resetConfig,
+  setConfig,
+  logEvents,
+  MyEmitter,
+};

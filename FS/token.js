@@ -87,36 +87,6 @@ function updateEmail(username, newEmail){
   });
 }
 
-function tokenApp() {
-  if(DEBUG) console.log('tokenApp()');
-
-  switch (myArgs[1]) {
-  case '--count':
-    if(DEBUG) console.log('--count');
- //     tokenCount();
-      break;
-  case '--list':
-    if(DEBUG) console.log('--list');
-      tokenList();
-      break; 
-  case '--new':
-      if (myArgs.length < 3) {
-          console.log('invalid syntax. node myapp token --new [username]')
-      } else {
-        if(DEBUG) console.log('--new');
-        newToken(myArgs[2]);
-      }
-      break;
-  case '--help':
-  case '--h':
-  default:
-      fs.readFile(__dirname + "/usage.txt", (error, data) => {
-          if(error) throw error;              
-          console.log(data.toString());
-      });
-  }
-}
-
 function updatePhone(username,newPhone){
   fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
     if(error) throw error; 
@@ -138,6 +108,49 @@ function updatePhone(username,newPhone){
     }
   });
 }
+
+function tokenApp() {
+  if(DEBUG) console.log('tokenApp()');
+
+  switch (myArgs[1]) {
+  case '--count':
+    if(DEBUG) console.log('--count');
+ //     tokenCount();
+      break;
+  case '--list':
+    if(DEBUG) console.log('--list');
+      tokenList();
+      break; 
+  case '--new':
+      if (myArgs.length < 3) {
+          console.log('invalid syntax. node myapp token --new [username]')
+      } else {
+        if(DEBUG) console.log('--new');
+        newToken(myArgs[2], myArgs[3], myArgs[4]);
+      }
+      break;
+  case '--update':
+      if(myArgs.length < 5){
+          console.log('invalid syntax. node myapp token --update [e/p] [username] [email/phone]')
+      }else{
+        if(myArgs[2] == 'e'){
+          updateEmail(myArgs[3], myArgs[4]);
+        }
+        if(myArgs[2] == 'p'){
+          updatePhone(myArgs[3], myArgs[4]);
+        }
+      }
+      break;
+  case '--help':
+  case '--h':
+  default:
+      fs.readFile(__dirname + "/usage.txt", (error, data) => {
+          if(error) throw error;              
+          console.log(data.toString());
+      });
+  }
+}
+
 
 module.exports = {
   tokenApp,

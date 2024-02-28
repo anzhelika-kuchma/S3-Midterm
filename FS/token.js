@@ -19,7 +19,7 @@ function tokenList() {
    });
 };
 
-function newToken(username) {
+function newToken(username,email,phone){
   if(DEBUG) console.log('token.newToken()');
   let newToken = JSON.parse(`{
       "created": "1969-01-31 12:30:00",
@@ -38,6 +38,9 @@ function newToken(username) {
   newToken.username = username;
   newToken.token = crc32(username).toString(16);
   newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
+
+  if(email !== undefined) newToken.email = email;
+  if(email !== undefined) newToken.phone = phone;
 
   fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
       if(error) throw error; 

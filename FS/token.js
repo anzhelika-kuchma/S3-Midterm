@@ -117,6 +117,28 @@ function tokenApp() {
   }
 }
 
+function updatePhone(username,newPhone){
+  fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
+    if(error) throw error; 
+    let tokens = JSON.parse(data);
+    let token = tokens.filter(token => token.username === username)[0];
+    if(token == undefined){
+      console.log(`User ${username} cannot be found. Check your spelling and try again!`);
+    }
+    else{
+      let oldphone = token.phone;
+      token.phone = newPhone;
+      console.log(token);
+      fs.writeFile(__dirname + '/json/tokens.json', JSON.stringify(tokens), (err) => {
+        if (err) console.log(err);
+        else { 
+            console.log(`Phone number from ${username} updated from ${oldphone} to ${token.phone}`);
+        }
+      })
+    }
+  });
+}
+
 module.exports = {
   tokenApp,
 }

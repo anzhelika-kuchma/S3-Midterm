@@ -65,6 +65,28 @@ function addDays(date, days) {
   return result;
 }
 
+function updateEmail(username, newEmail){
+  fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
+    if(error) throw error; 
+    let tokens = JSON.parse(data);
+    let token = tokens.filter(token => token.username === username)[0];
+    if(token == undefined){
+      console.log(`User ${username} cannot be found. Check your spelling and try again!`);
+    }
+    else{
+      let oldemail= token.email;
+      token.email = newEmail;
+      console.log(token);
+      fs.writeFile(__dirname + '/json/tokens.json', JSON.stringify(tokens), (err) => {
+        if (err) console.log(err);
+        else { 
+            console.log(`Email from ${username} updated from ${oldemail} to ${token.email}`);
+        }
+      })
+    }
+  });
+}
+
 function tokenApp() {
   if(DEBUG) console.log('tokenApp()');
 

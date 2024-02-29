@@ -1,4 +1,4 @@
-// Node.js common core global modules
+
 const fs = require('fs');
 const path = require('path');
 
@@ -69,10 +69,8 @@ function addDays(date, days) {
   result.setDate(result.getDate() + days);
   return result;
 }
-//TO DO
-/*
-Token count should be able to count the tokens in json/tokens.json, and return a number
-*/
+
+// Token count should be able to count the tokens in json/tokens.json, and return a number
 function tokenCount(){
   if(DEBUG) console.log('tokenCount()');
   fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
@@ -81,12 +79,10 @@ function tokenCount(){
       console.log('Total number of tokens:', tokens.length);
    });
 }
-//TO DO
-/*
-Find user by username from json/tokens.json, and return the corresponding record
-*/
-function queryByUsername(username){
-if(DEBUG) console.log('queryByUsername()',username);
+
+// Find user by username from json/tokens.json, and return the corresponding record
+function searchByUsernameByUsername(username){
+if(DEBUG) console.log('searchByUsername()',username);
 fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
   if(error) throw error; 
   let tokens = JSON.parse(data);
@@ -99,13 +95,10 @@ fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
   }
 });
 }
-//TO DO
-/*
-Find user by email from json/tokens.json, and return the corresponding record
 
-*/
-function queryByEmail(email){
-if(DEBUG) console.log('queryByEmail()', email);
+// Find user by email from json/tokens.json, and return the corresponding record
+function searchByEmail(email){
+if(DEBUG) console.log('searchByEmail()', email);
 fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
   if(error) throw error; 
   let tokens = JSON.parse(data);
@@ -118,13 +111,12 @@ fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
   }
 });
 }
-//TO DO
-/*
-Find user by email from json/tokens.json, and return the corresponding record. 
-May not be unique, so return a list of tokens
-*/
-function queryByPhone(phone){
-  if(DEBUG) console.log('queryByPhone()', phone);
+
+
+// Find user by email from json/tokens.json, and return the corresponding record. 
+
+function searchByPhone(phone){
+  if(DEBUG) console.log('searchByPhone()', phone);
   fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
       if(error) throw error; 
       let tokens = JSON.parse(data);
@@ -199,23 +191,23 @@ function tokenApp() {
   if(DEBUG) console.log('tokenApp()');
 
   switch (myArgs[1]){
-    case '--query':
-      if(DEBUG) console.log('--query');
+    case '--search':
+      if(DEBUG) console.log('--search');
       if (myArgs.length < 4) {
-        console.log('invalid syntax. node myapp token --query [u/e/p] [username/email/phone]')
+        console.log('invalid syntax. node myapp token --search [u/e/p] [username/email/phone]')
       } 
       else {
           if(myArgs[2] == 'u' || myArgs[2] == 'U'){
-            queryByUsername(myArgs[3]);
+            searchByUsername(myArgs[3]);
           }
           else if(myArgs[2] == 'e' || myArgs[2] == 'E'){
-            queryByEmail(myArgs[3]);
+            searchByEmail(myArgs[3]);
           }
           else if(myArgs[2] == 'p' || myArgs[2] == 'P'){
-            queryByPhone(myArgs[3]);
+            searchByPhone(myArgs[3]);
           }
           else{
-            console.log('invalid syntax. node myapp token --query [u/e/p] [username/email/phone]')
+            console.log('invalid syntax. node myapp token --search [u/e/p] [username/email/phone]')
           }
       }
     break;
@@ -235,9 +227,9 @@ function tokenApp() {
         newToken(myArgs[2], myArgs[3], myArgs[4]);
       }
       break;
-  case '--update':
+  case '--upd':
       if(myArgs.length < 5){
-          console.log('invalid syntax. node myapp token --update [e/p] [username] [email/phone]')
+          console.log('invalid syntax. node myapp token --upd [e/p] [username] [email/phone]')
       }else{
         if(myArgs[2] == 'e' || myArgs[2] == 'E' ){
           updateEmail(myArgs[3], myArgs[4]);
@@ -246,7 +238,7 @@ function tokenApp() {
           updatePhone(myArgs[3], myArgs[4]);
         }
         else{
-          console.log('invalid syntax. node myapp token --update [e/p] [username] [email/phone]')
+          console.log('invalid syntax. node myapp token --upd [e/p] [username] [email/phone]')
         }
       }
       break;

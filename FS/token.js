@@ -81,7 +81,7 @@ function tokenCount(){
 }
 
 // Find user by username from json/tokens.json, and return the corresponding record
-function searchByUsernameByUsername(username){
+function searchByUsername(username){
 if(DEBUG) console.log('searchByUsername()',username);
 fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
   if(error) throw error; 

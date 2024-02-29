@@ -55,7 +55,7 @@ function createFiles() {
     } else {
       console.log('token file already exists.');
     }
-
+     
   } catch(err) {
       console.log(err);
   }
